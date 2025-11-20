@@ -1,0 +1,41 @@
+# Core dependencies
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Web framework (choose one)
+# fastapi==0.104.1
+# uvicorn==0.24.0
+# flask==3.0.0
+
+# Database
+# psycopg2-binary==2.9.9  # PostgreSQL
+# pymongo==4.6.0          # MongoDB
+# sqlalchemy==2.0.23      # ORM
+
+# Redis
+redis==5.0.1
+
+# AI/LLM
+pyautogen==0.2.0
+langchain==0.1.0
+chromadb==0.4.18
+litellm==1.10.0
+
+# Utilities
+requests==2.31.0
+httpx==0.25.2
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+
+# Code quality
+black==23.12.0
+flake8==6.1.0
+mypy==1.7.1
+isort==5.13.0
+
+# Monitoring
+prometheus-client==0.19.0

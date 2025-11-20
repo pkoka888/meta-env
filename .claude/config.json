@@ -1,0 +1,100 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./src"],
+      "description": "Access to project filesystem"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub integration for issues, PRs, repositories"
+    },
+    "prometheus": {
+      "command": "node",
+      "args": ["./mcp-servers/prometheus-server.js"],
+      "description": "Prometheus metrics monitoring"
+    },
+    "database": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sqlite"],
+      "description": "SQLite database access"
+    }
+  },
+
+  "models": {
+    "chat": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-20250514",
+      "temperature": 0.7,
+      "maxTokens": 4096
+    },
+    "autocomplete": {
+      "provider": "ollama",
+      "model": "qwen2.5-coder:7b",
+      "apiBase": "http://localhost:11434"
+    },
+    "reasoning": {
+      "provider": "ollama",
+      "model": "deepseek-r1:7b",
+      "apiBase": "http://localhost:11434"
+    }
+  },
+
+  "agents": {
+    "security-auditor": {
+      "systemPrompt": "You are a security auditor. Review code for OWASP Top 10 vulnerabilities, insecure dependencies, and security best practices violations. Provide actionable recommendations.",
+      "model": "claude-sonnet-4",
+      "tools": ["filesystem", "github"],
+      "autoActivate": ["security", "audit", "vulnerability"]
+    },
+    "performance-optimizer": {
+      "systemPrompt": "You are a performance optimization specialist. Analyze code for bottlenecks, inefficient algorithms, memory leaks, and suggest optimizations.",
+      "model": "claude-sonnet-4",
+      "tools": ["filesystem", "prometheus"],
+      "autoActivate": ["performance", "optimize", "slow"]
+    },
+    "documentation-writer": {
+      "systemPrompt": "You are a technical documentation specialist. Create clear, comprehensive documentation including API docs, README files, and code comments.",
+      "model": "claude-sonnet-4",
+      "tools": ["filesystem", "github"],
+      "autoActivate": ["documentation", "docs", "readme"]
+    },
+    "test-engineer": {
+      "systemPrompt": "You are a test engineering specialist. Generate comprehensive unit tests, integration tests, and e2e tests with high coverage and edge case handling.",
+      "model": "claude-sonnet-4",
+      "tools": ["filesystem"],
+      "autoActivate": ["test", "testing", "coverage"]
+    },
+    "research-analyst": {
+      "systemPrompt": "You are a technical research analyst. Conduct thorough research, create comparison tables, evaluate technologies, and generate detailed reports.",
+      "model": "claude-sonnet-4",
+      "tools": ["github"],
+      "autoActivate": ["research", "compare", "evaluate", "analyze"]
+    }
+  },
+
+  "skills": {
+    "autoLoadPatterns": [
+      "**/*.SKILL.md"
+    ],
+    "skillsDirectory": ".claude/skills"
+  },
+
+  "contextManagement": {
+    "maxContextTokens": 150000,
+    "archiveOldConversations": true,
+    "archiveAfterDays": 30,
+    "archivePath": "memory/archive/"
+  },
+
+  "workflowAutomation": {
+    "preCommitChecks": true,
+    "autoFormatOnSave": true,
+    "runTestsBeforeCommit": false,
+    "updateDocsOnChange": true
+  }
+}

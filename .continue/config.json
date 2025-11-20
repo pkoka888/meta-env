@@ -1,0 +1,198 @@
+{
+  "models": [
+    {
+      "title": "Claude Sonnet 4 (Cloud)",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-20250514",
+      "apiKey": "${ANTHROPIC_API_KEY}",
+      "contextLength": 200000,
+      "description": "Primary cloud model for complex tasks"
+    },
+    {
+      "title": "Claude via OpenRouter",
+      "provider": "openrouter",
+      "model": "anthropic/claude-sonnet-4",
+      "apiKey": "${OPENROUTER_API_KEY}",
+      "contextLength": 200000,
+      "description": "Alternative cloud routing"
+    },
+    {
+      "title": "DeepSeek R1 (Local)",
+      "provider": "ollama",
+      "model": "deepseek-r1:7b",
+      "apiBase": "http://localhost:11434",
+      "contextLength": 32768,
+      "description": "Local reasoning model"
+    },
+    {
+      "title": "Qwen2.5 Coder (Local)",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:7b",
+      "apiBase": "http://localhost:11434",
+      "contextLength": 32768,
+      "description": "Fast local coding model"
+    },
+    {
+      "title": "Llama 3 (Local)",
+      "provider": "ollama",
+      "model": "llama3:8b",
+      "apiBase": "http://localhost:11434",
+      "contextLength": 8192,
+      "description": "General purpose local model"
+    },
+    {
+      "title": "Remote GPU Ollama",
+      "provider": "ollama",
+      "model": "llama3:8b",
+      "apiBase": "http://${REMOTE_GPU_IP}:11434",
+      "contextLength": 8192,
+      "description": "Remote GPU-accelerated inference"
+    }
+  ],
+  "tabAutocompleteModel": {
+    "title": "Qwen2.5 Coder Autocomplete",
+    "provider": "ollama",
+    "model": "qwen2.5-coder:7b",
+    "apiBase": "http://localhost:11434",
+    "contextLength": 2048,
+    "maxTokens": 256,
+    "temperature": 0.3,
+    "debounceDelay": 300
+  },
+  "embeddingsProvider": {
+    "provider": "ollama",
+    "model": "nomic-embed-text",
+    "apiBase": "http://localhost:11434",
+    "description": "Local embeddings for context retrieval"
+  },
+  "contextProviders": [
+    {
+      "name": "code",
+      "params": {
+        "maxResults": 10
+      }
+    },
+    {
+      "name": "docs",
+      "params": {
+        "folders": [
+          "docs",
+          "memory",
+          ".claude"
+        ]
+      }
+    },
+    {
+      "name": "diff",
+      "params": {}
+    },
+    {
+      "name": "terminal",
+      "params": {
+        "maxLines": 100
+      }
+    },
+    {
+      "name": "problems",
+      "params": {}
+    },
+    {
+      "name": "folder",
+      "params": {
+        "folders": [
+          "src",
+          "tests"
+        ]
+      }
+    },
+    {
+      "name": "codebase",
+      "params": {
+        "nRetrieve": 25,
+        "nFinal": 5,
+        "useReranking": true
+      }
+    }
+  ],
+  "slashCommands": [
+    {
+      "name": "edit",
+      "description": "Edit selected code with AI assistance"
+    },
+    {
+      "name": "comment",
+      "description": "Add detailed comments to code"
+    },
+    {
+      "name": "share",
+      "description": "Share conversation context"
+    },
+    {
+      "name": "cmd",
+      "description": "Generate terminal commands"
+    },
+    {
+      "name": "commit",
+      "description": "Generate git commit message"
+    },
+    {
+      "name": "test",
+      "description": "Generate unit tests for selected code",
+      "prompt": "Generate comprehensive unit tests for the selected code. Include edge cases, error handling, and mock dependencies where appropriate."
+    },
+    {
+      "name": "optimize",
+      "description": "Optimize code performance",
+      "prompt": "Analyze and optimize the selected code for better performance, readability, and efficiency. Explain the changes."
+    },
+    {
+      "name": "security",
+      "description": "Security audit of selected code",
+      "prompt": "Perform a security audit on the selected code. Identify vulnerabilities, suggest fixes, and explain security best practices."
+    },
+    {
+      "name": "docs",
+      "description": "Generate documentation",
+      "prompt": "Generate comprehensive documentation for the selected code including purpose, parameters, return values, and examples."
+    },
+    {
+      "name": "refactor",
+      "description": "Refactor code following best practices",
+      "prompt": "Refactor the selected code following best practices, SOLID principles, and modern patterns. Maintain functionality while improving structure."
+    }
+  ],
+  "customCommands": [
+    {
+      "name": "research",
+      "description": "Research a technical topic",
+      "prompt": "Research {{{input}}} and provide:\n1. Overview and key concepts\n2. Current best practices\n3. Common pitfalls\n4. Recommended tools/libraries\n5. Code examples"
+    },
+    {
+      "name": "compare",
+      "description": "Compare technologies or approaches",
+      "prompt": "Create a detailed comparison of {{{input}}} including:\n1. Feature comparison table\n2. Pros and cons\n3. Use case recommendations\n4. Performance considerations\n5. Community and ecosystem"
+    }
+  ],
+  "experimental": {
+    "modelRoles": {
+      "inlineEdit": "qwen2.5-coder:7b",
+      "quickFix": "qwen2.5-coder:7b",
+      "chat": "anthropic/claude-sonnet-4",
+      "autocomplete": "qwen2.5-coder:7b"
+    },
+    "quickActions": true,
+    "contextAwareness": "enhanced"
+  },
+  "ui": {
+    "fontSize": 14,
+    "codeBlockCopyButton": true,
+    "showInlineTip": true,
+    "displayRawMarkdown": false
+  },
+  "telemetry": {
+    "enabled": false
+  },
+  "analytics": {
+    "enabled": false
+  }
+}

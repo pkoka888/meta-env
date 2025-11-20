@@ -1,0 +1,125 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Infrastructure Events",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Meta-Env Infrastructure Overview - All Servers, Services, and Projects",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "meta-env"
+      ],
+      "targetBlank": true,
+      "title": "Related Dashboards",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [],
+  "refresh": "30s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [
+    "infrastructure",
+    "overview",
+    "meta-env",
+    "multi-server"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus",
+        "definition": "label_values(up, environment)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Environment",
+        "multi": true,
+        "name": "environment",
+        "options": [],
+        "query": "label_values(up, environment)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus",
+        "definition": "label_values(up{environment=~\"$environment\"}, server)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Server",
+        "multi": true,
+        "name": "server",
+        "options": [],
+        "query": "label_values(up{environment=~\"$environment\"}, server)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus",
+        "definition": "label_values(up{server=~\"$server\"}, project)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Project",
+        "multi": true,
+        "name": "project",
+        "options": [],
+        "query": "label_values(up{server=~\"$server\"}, project)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Infrastructure Overview - Meta-Env",
+  "uid": "meta-env-infrastructure-overview",
+  "version": 1,
+  "readme": "Meta-Env Infrastructure Overview Dashboard\n\nThis dashboard provides a high-level view of the entire infrastructure:\n\n**Network Topology**\n- Public IP: 89.203.173.196\n- Internal Network: 192.168.1.0/24\n- VPN Network: 10.8.0.0/24\n- Firewall: Cisco Firepower 1010 (192.168.1.1)\n\n**Server 60 (192.168.1.60) - backup**\n- Role: Backup/Dashboard/Monitoring Hub\n- OS: Debian 12 (bookworm)\n- Web Server: Nginx\n- Database: PostgreSQL 15.10\n- Services:\n  - Grafana (3000)\n  - Prometheus (9090)\n  - Portainer (9000)\n  - OpenVPN Server (1194)\n  - Dashboard (8060)\n  - Cockpit (10060)\n\n**Server 61 (192.168.1.61) - okamih**\n- Role: Production E-commerce\n- OS: Debian 13 (trixie)\n- Web Server: Apache 2.4.65\n- Database: MariaDB 11.8.2\n- PHP: 8.4.11 + FPM\n- Services:\n  - okamih.cz (Czech e-commerce)\n  - okamih.sk (Slovak e-commerce)\n  - PrestaShop 7/8\n  - Prometheus (9090)\n  - Cockpit (10061)\n\n**Server 62 (192.168.1.62) - cpall**\n- Role: Web Hosting\n- OS: Debian 13 (trixie)\n- Web Server: Nginx 1.26.3\n- Services:\n  - Prometheus (9090)\n  - Cockpit (10062)\n  - HTTP (8062)\n  - HTTPS (8462)\n\n**Security Architecture**\n- UFW Firewall: Active on all servers\n- Default Policy: Deny incoming, Allow outgoing\n- OpenVPN: Required for monitoring tools access\n- Public Services: Only production web (80, 443) and specific ports\n- Monitoring Tools: VPN/Local access ONLY\n\n**Monitoring Stack**\n- Prometheus Federation: Central server pulls from all nodes\n- Grafana: Unified visualization (Server 60)\n- Wazuh: Security monitoring and SIEM\n- Node Exporter: System metrics (all servers)\n- Application Exporters: Database, web server, custom apps\n\n**Access Methods**\n- SSH: Via dedicated ports (2260, 2261, 2262)\n- VPN: OpenVPN on Server 60 (10.8.0.0/24)\n- Web: Public IPs for production services\n- Management: Cockpit on all servers (VPN access)\n\n**Structured Labels**\nAll metrics use consistent labeling:\n- server: server-60, server-61, server-62\n- environment: production, development, staging\n- project: Project name (okamih-cz, dashboard, etc.)\n- role: Server role (monitoring, ecommerce, webhosting)\n- service: Specific service name\n\nPanel Recommendations:\n- Service Status Map (all services)\n- Server Health Overview (CPU, Memory, Disk)\n- Network Traffic (all servers)\n- Database Performance (PostgreSQL, MariaDB)\n- Security Alerts (Wazuh integration)\n- Application Metrics (PrestaShop, Node.js)\n- Federation Status (Prometheus federation)\n- VPN Connection Status\n\nReferences:\n- SERVERS.md: /home/user/meta-env/SERVERS.md\n- Prometheus Config: /home/user/meta-env/monitoring/prometheus/prometheus.yml\n- Network Documentation: Network topology and access methods"
+}

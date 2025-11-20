@@ -1,0 +1,12 @@
+{
+  "provider": "openrouter",
+  "apiKey": "${OPENROUTER_API_KEY}",
+  "model": "anthropic/claude-sonnet-4",
+  "autoApprove": {
+    "fileOperations": false,
+    "terminalCommands": ["npm install", "npm test", "pip install", "pytest"]
+  },
+  "customInstructions": "Always follow the project's coding standards in memory/coding-standards.md. Consult memory/constitution.md for architectural decisions.",
+  "maxTokens": 8192,
+  "temperature": 0.7
+}

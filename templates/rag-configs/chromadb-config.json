@@ -1,0 +1,118 @@
+{
+  "version": "1.0",
+  "name": "chromadb-config",
+  "description": "ChromaDB vector database configuration",
+  "server": {
+    "host": "localhost",
+    "port": 8000,
+    "cors_allow_origins": ["*"],
+    "is_persistent": true,
+    "persist_directory": "./data/chroma_db",
+    "anonymized_telemetry": false
+  },
+  "client": {
+    "type": "persistent",
+    "settings": {
+      "chroma_db_impl": "duckdb+parquet",
+      "persist_directory": "./data/chroma_db",
+      "anonymized_telemetry": false
+    },
+    "tenant": "default_tenant",
+    "database": "default_database"
+  },
+  "collections": {
+    "default": {
+      "name": "documents",
+      "metadata": {
+        "description": "General document collection",
+        "created_at": "auto"
+      },
+      "embedding_function": {
+        "type": "ollama",
+        "model": "nomic-embed-text",
+        "base_url": "http://localhost:11434"
+      },
+      "distance_function": "cosine",
+      "hnsw_space": "cosine",
+      "hnsw_construction_ef": 100,
+      "hnsw_search_ef": 100,
+      "hnsw_M": 16
+    },
+    "code": {
+      "name": "code_snippets",
+      "metadata": {
+        "description": "Code snippets and documentation",
+        "created_at": "auto"
+      },
+      "embedding_function": {
+        "type": "ollama",
+        "model": "nomic-embed-text",
+        "base_url": "http://localhost:11434"
+      },
+      "distance_function": "cosine"
+    },
+    "conversations": {
+      "name": "chat_history",
+      "metadata": {
+        "description": "Conversational memory storage",
+        "created_at": "auto"
+      },
+      "embedding_function": {
+        "type": "ollama",
+        "model": "nomic-embed-text",
+        "base_url": "http://localhost:11434"
+      },
+      "distance_function": "cosine"
+    }
+  },
+  "indexing": {
+    "batch_size": 100,
+    "max_batch_tokens": 40000,
+    "parallel_batches": 4
+  },
+  "query": {
+    "n_results": 10,
+    "include": ["documents", "metadatas", "distances"],
+    "where_document": {},
+    "where": {}
+  },
+  "performance": {
+    "cache_size_mb": 512,
+    "thread_pool_size": 4,
+    "allow_reset": false,
+    "max_connection_pool_size": 10
+  },
+  "backup": {
+    "enabled": true,
+    "backup_directory": "./backups/chroma",
+    "schedule": "daily",
+    "retention_days": 30
+  },
+  "monitoring": {
+    "prometheus_metrics": {
+      "enabled": true,
+      "port": 9091
+    },
+    "health_check": {
+      "enabled": true,
+      "endpoint": "/health",
+      "interval_seconds": 60
+    },
+    "logging": {
+      "level": "INFO",
+      "format": "json",
+      "log_file": "logs/chromadb.log"
+    }
+  },
+  "security": {
+    "authentication": {
+      "enabled": false,
+      "type": "token",
+      "token_header": "X-Chroma-Token"
+    },
+    "encryption": {
+      "enabled": false,
+      "algorithm": "AES-256-GCM"
+    }
+  }
+}

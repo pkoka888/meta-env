@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "Continue.continue",
+    "saoudrizwan.claude-dev",
+    "ms-python.python",
+    "ms-python.black-formatter",
+    "ms-python.vscode-pylance",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode-remote.remote-ssh",
+    "GitHub.copilot",
+    "eamodio.gitlens",
+    "ms-azuretools.vscode-docker",
+    "redhat.vscode-yaml"
+  ],
+  "unwantedRecommendations": [
+    "formulahendry.auto-close-tag",
+    "hookyqr.beautify"
+  ]
+}

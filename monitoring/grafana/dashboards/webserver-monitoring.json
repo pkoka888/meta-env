@@ -1,0 +1,93 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Web Server Events",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Web Server Monitoring - Apache (Server 61) & Nginx (Servers 60, 62)",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [],
+  "refresh": "1m",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [
+    "webserver",
+    "nginx",
+    "apache",
+    "meta-env",
+    "http"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus",
+        "definition": "label_values(nginx_up, server)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Server",
+        "multi": true,
+        "name": "server",
+        "options": [],
+        "query": "label_values(nginx_up, server)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus",
+        "definition": "label_values(nginx_up{server=~\"$server\"}, webserver)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Web Server Type",
+        "multi": true,
+        "name": "webserver",
+        "options": [],
+        "query": "label_values(nginx_up{server=~\"$server\"}, webserver)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Web Server Monitoring - Meta-Env",
+  "uid": "meta-env-webserver-monitoring",
+  "version": 1,
+  "readme": "This is a placeholder dashboard for web server monitoring.\n\nWeb Server Infrastructure:\n\n**Server 60 (192.168.1.60) - Nginx**\n- Role: Dashboard and monitoring services\n- Port: 8060 (HTTP), 8443 (HTTPS)\n- Services: Dashboard, Budget Control\n- Recommended Dashboard ID: 12708 (Nginx Metrics)\n- Exporter: 192.168.1.60:9113\n\n**Server 61 (192.168.1.61) - Apache 2.4.65**\n- Role: Production E-commerce (CRITICAL)\n- Ports: 80 (HTTP), 443 (HTTPS)\n- PHP: 8.4.11 + FPM (256M memory, 32M uploads)\n- Services:\n  - okamih.cz (Czech e-commerce)\n  - okamih.sk (Slovak e-commerce)\n  - PrestaShop 7/8\n  - Test environment (test.okamih.cz)\n- Recommended Dashboard ID: 3894 (Apache Metrics)\n- Exporter: 192.168.1.61:9117\n\n**Server 62 (192.168.1.62) - Nginx 1.26.3**\n- Role: Web hosting server\n- Ports: 8062 (HTTP), 8462 (HTTPS)\n- Services: TBD (awaiting configuration)\n- Recommended Dashboard ID: 12708 (Nginx Metrics)\n- Exporter: 192.168.1.62:9113\n\nImport Instructions:\n\n1. Nginx Dashboard:\n   - Go to Dashboards > Import\n   - Enter dashboard ID: 12708\n   - Select Prometheus data source\n   - Configure for Servers 60 and 62\n\n2. Apache Dashboard:\n   - Go to Dashboards > Import\n   - Enter dashboard ID: 3894\n   - Select Prometheus data source\n   - Configure for Server 61\n\nKey Metrics to Monitor:\n\n**General (All Web Servers)**\n- HTTP request rate\n- Response time\n- Status codes (2xx, 3xx, 4xx, 5xx)\n- Active connections\n- Bytes sent/received\n- Uptime\n\n**Apache Specific (Server 61)**\n- Worker utilization\n- Request per second\n- CPU load\n- Scoreboard status\n- Virtual host statistics\n\n**Nginx Specific (Servers 60, 62)**\n- Active connections\n- Waiting/Reading/Writing states\n- Accepted/Handled connections\n- Requests per second\n- Upstream status\n\n**Critical Monitoring (Server 61)**\nProduction e-commerce server requires:\n- 99.9% uptime monitoring\n- Real-time error detection\n- Performance degradation alerts\n- SSL certificate expiration warnings\n- Payment gateway availability\n- Database connection health\n\nSecurity Considerations:\n\n- All web server exporters on local network only\n- Production services (80, 443) are public on Server 61\n- Dashboard services (8060, 8443, 8062, 8462) are restricted\n- Monitor for:\n  - DDoS attacks (connection spikes)\n  - SQL injection attempts (error patterns)\n  - Brute force attempts (auth failures)\n  - Suspicious user agents\n  - Geographic anomalies\n\nExporter Setup:\n\n**Nginx Exporter Installation:**\n```bash\n# Install on Servers 60 and 62\napt-get install prometheus-nginx-exporter\nsystemctl enable prometheus-nginx-exporter\nsystemctl start prometheus-nginx-exporter\n\n# Configure Nginx to expose stub_status\n# Add to nginx config:\nlocation /nginx_status {\n  stub_status on;\n  access_log off;\n  allow 127.0.0.1;\n  deny all;\n}\n```\n\n**Apache Exporter Installation:**\n```bash\n# Install on Server 61\napt-get install prometheus-apache-exporter\nsystemctl enable prometheus-apache-exporter\nsystemctl start prometheus-apache-exporter\n\n# Configure Apache mod_status\n# Add to apache config:\n<Location \"/server-status\">\n  SetHandler server-status\n  Require ip 127.0.0.1\n</Location>\n```\n\nReferences:\n- SERVERS.md: /home/user/meta-env/SERVERS.md\n- Prometheus Config: /home/user/meta-env/monitoring/prometheus/prometheus.yml\n- Nginx Exporter: https://github.com/nginxinc/nginx-prometheus-exporter\n- Apache Exporter: https://github.com/Lusitaniae/apache_exporter"
+}

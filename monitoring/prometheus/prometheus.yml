@@ -1,0 +1,305 @@
+# Prometheus Configuration for Meta-Env Multi-Server Infrastructure
+# Centralized monitoring for Servers 60, 61, 62
+# Documentation: /home/user/meta-env/SERVERS.md
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'okamih-infrastructure'
+    datacenter: 'okamih-prague'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - 'alertmanager:9093'
+
+# Rule files for alerting
+rule_files:
+  # - "alerts/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # ========================================
+  # Self Monitoring - Prometheus Server
+  # ========================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          server: 'server-60'
+          environment: 'production'
+          role: 'monitoring'
+
+  # ========================================
+  # Federation - Multi-Server Prometheus
+  # ========================================
+  # Central Prometheus scrapes remote Prometheus instances
+  # This allows unified metrics from all servers
+
+  - job_name: 'federate-server-61'
+    scrape_interval: 30s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{job=~".*"}'
+        - '{__name__=~"up|node_.*|process_.*"}'
+    static_configs:
+      - targets:
+          - '192.168.1.61:9090'
+        labels:
+          server: 'server-61'
+          environment: 'production'
+          role: 'ecommerce'
+
+  - job_name: 'federate-server-62'
+    scrape_interval: 30s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{job=~".*"}'
+        - '{__name__=~"up|node_.*|process_.*"}'
+    static_configs:
+      - targets:
+          - '192.168.1.62:9090'
+        labels:
+          server: 'server-62'
+          environment: 'production'
+          role: 'webhosting'
+
+  # ========================================
+  # Node Exporter - System Metrics
+  # ========================================
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets:
+          - '192.168.1.60:9100'
+        labels:
+          server: 'server-60'
+          hostname: 'backup'
+          environment: 'production'
+          role: 'monitoring'
+
+      - targets:
+          - '192.168.1.61:9100'
+        labels:
+          server: 'server-61'
+          hostname: 'okamih'
+          environment: 'production'
+          role: 'ecommerce'
+
+      - targets:
+          - '192.168.1.62:9100'
+        labels:
+          server: 'server-62'
+          hostname: 'cpall'
+          environment: 'production'
+          role: 'webhosting'
+
+  # ========================================
+  # Database Monitoring
+  # ========================================
+
+  # PostgreSQL Exporter - Server 60
+  - job_name: 'postgresql'
+    static_configs:
+      - targets:
+          - '192.168.1.60:9187'
+        labels:
+          server: 'server-60'
+          database: 'postgresql'
+          environment: 'production'
+          project: 'dashboard'
+
+  # MySQL/MariaDB Exporter - Server 61
+  - job_name: 'mysql'
+    static_configs:
+      - targets:
+          - '192.168.1.61:9104'
+        labels:
+          server: 'server-61'
+          database: 'mariadb'
+          environment: 'production'
+          project: 'okamih-ecommerce'
+
+  # ========================================
+  # Web Server Monitoring
+  # ========================================
+
+  # Nginx Exporter - Server 60
+  - job_name: 'nginx-server-60'
+    static_configs:
+      - targets:
+          - '192.168.1.60:9113'
+        labels:
+          server: 'server-60'
+          webserver: 'nginx'
+          environment: 'production'
+
+  # Apache Exporter - Server 61
+  - job_name: 'apache-server-61'
+    static_configs:
+      - targets:
+          - '192.168.1.61:9117'
+        labels:
+          server: 'server-61'
+          webserver: 'apache'
+          environment: 'production'
+          project: 'okamih-ecommerce'
+
+  # Nginx Exporter - Server 62
+  - job_name: 'nginx-server-62'
+    static_configs:
+      - targets:
+          - '192.168.1.62:9113'
+        labels:
+          server: 'server-62'
+          webserver: 'nginx'
+          environment: 'production'
+
+  # ========================================
+  # Application Monitoring
+  # ========================================
+
+  # PrestaShop Application - Server 61
+  - job_name: 'prestashop'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '192.168.1.61:8081'
+        labels:
+          server: 'server-61'
+          application: 'prestashop'
+          environment: 'production'
+          project: 'okamih-cz'
+
+      - targets:
+          - '192.168.1.61:8082'
+        labels:
+          server: 'server-61'
+          application: 'prestashop'
+          environment: 'production'
+          project: 'okamih-sk'
+
+  # Node.js Dashboard - Server 60
+  - job_name: 'nodejs-dashboard'
+    static_configs:
+      - targets:
+          - '192.168.1.60:8060'
+        labels:
+          server: 'server-60'
+          application: 'nodejs'
+          environment: 'production'
+          project: 'dashboard'
+
+  # ========================================
+  # Docker & Container Monitoring
+  # ========================================
+
+  # Portainer (Server 60)
+  - job_name: 'portainer'
+    static_configs:
+      - targets:
+          - '192.168.1.60:9000'
+        labels:
+          server: 'server-60'
+          service: 'portainer'
+          environment: 'production'
+
+  # cAdvisor - Container metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets:
+          - '192.168.1.60:8080'
+        labels:
+          server: 'server-60'
+          service: 'cadvisor'
+          environment: 'production'
+
+  # ========================================
+  # Security Monitoring - Wazuh Integration
+  # ========================================
+
+  # Wazuh Prometheus Exporter
+  # Reference: https://github.com/pyToshka/wazuh-prometheus-exporter
+  - job_name: 'wazuh'
+    static_configs:
+      - targets:
+          - '192.168.1.60:9999'
+        labels:
+          server: 'server-60'
+          service: 'wazuh'
+          environment: 'production'
+          security: 'true'
+
+  # ========================================
+  # Network & VPN Monitoring
+  # ========================================
+
+  # OpenVPN Exporter - Server 60
+  - job_name: 'openvpn'
+    static_configs:
+      - targets:
+          - '192.168.1.60:9176'
+        labels:
+          server: 'server-60'
+          service: 'openvpn'
+          environment: 'production'
+          vpn_network: '10.8.0.0/24'
+
+  # Blackbox Exporter - External endpoint monitoring
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://okamih.cz
+          - https://okamih.sk
+          - http://89.203.173.196:8060
+        labels:
+          environment: 'production'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.1.60:9115  # Blackbox exporter address
+
+  # ========================================
+  # Custom AI/ML Project Metrics
+  # ========================================
+
+  # Placeholder for AI project exporters
+  # Add custom exporters here based on your AI projects
+
+  # - job_name: 'ai-project-1'
+  #   static_configs:
+  #     - targets:
+  #         - '192.168.1.60:9200'
+  #       labels:
+  #         project: 'ai-project-1'
+  #         environment: 'development'
+  #         type: 'ml-model'
+
+# ========================================
+# Remote Write Configuration (Optional)
+# ========================================
+# Use this for long-term storage solutions like Mimir or Thanos
+# remote_write:
+#   - url: "http://mimir:9009/api/v1/push"
+#     queue_config:
+#       capacity: 10000
+#       max_shards: 5
+#       min_shards: 1
+
+# ========================================
+# Remote Read Configuration (Optional)
+# ========================================
+# remote_read:
+#   - url: "http://mimir:9009/api/v1/read"

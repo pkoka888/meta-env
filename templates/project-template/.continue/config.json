@@ -1,0 +1,52 @@
+{
+  "models": [
+    {
+      "title": "Local Ollama",
+      "provider": "ollama",
+      "model": "deepseek-r1:7b",
+      "apiBase": "http://localhost:11434"
+    },
+    {
+      "title": "Cloud Claude",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4",
+      "apiKey": "${ANTHROPIC_API_KEY}"
+    },
+    {
+      "title": "OpenRouter",
+      "provider": "openrouter",
+      "model": "anthropic/claude-sonnet-4",
+      "apiKey": "${OPENROUTER_API_KEY}"
+    }
+  ],
+  "tabAutocompleteModel": {
+    "title": "Qwen Coder",
+    "provider": "ollama",
+    "model": "qwen2.5-coder:7b",
+    "apiBase": "http://localhost:11434"
+  },
+  "embeddingsProvider": {
+    "provider": "ollama",
+    "model": "nomic-embed-text",
+    "apiBase": "http://localhost:11434"
+  },
+  "customCommands": [
+    {
+      "name": "test",
+      "description": "Write unit tests for the selected code",
+      "prompt": "Write comprehensive unit tests for this code. Follow the project's testing standards."
+    },
+    {
+      "name": "optimize",
+      "description": "Optimize the selected code for performance",
+      "prompt": "Optimize this code for better performance while maintaining readability."
+    },
+    {
+      "name": "document",
+      "description": "Add documentation to the selected code",
+      "prompt": "Add comprehensive documentation including docstrings, type hints, and inline comments."
+    }
+  ],
+  "allowAnonymousTelemetry": false,
+  "docs": []
+}

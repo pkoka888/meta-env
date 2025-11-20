@@ -1,0 +1,102 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Node Exporter Full Dashboard - Multi-Server Monitoring for Meta-Env Infrastructure",
+  "editable": true,
+  "gnetId": 1860,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [],
+  "refresh": "30s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [
+    "node-exporter",
+    "prometheus",
+    "meta-env",
+    "multi-server"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus",
+        "definition": "label_values(node_uname_info, server)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Server",
+        "multi": true,
+        "name": "server",
+        "options": [],
+        "query": "label_values(node_uname_info, server)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus",
+        "definition": "label_values(node_uname_info{server=~\"$server\"}, hostname)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Hostname",
+        "multi": false,
+        "name": "hostname",
+        "options": [],
+        "query": "label_values(node_uname_info{server=~\"$server\"}, hostname)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Node Exporter Full - Meta-Env Multi-Server",
+  "uid": "meta-env-node-exporter",
+  "version": 1,
+  "readme": "This is a placeholder dashboard. Import the full dashboard from Grafana.com:\n\n1. Go to Dashboards > Import\n2. Enter dashboard ID: 1860\n3. Select Prometheus data source\n4. Click Import\n\nThis dashboard monitors:\n- Server 60 (192.168.1.60): backup - Monitoring hub\n- Server 61 (192.168.1.61): okamih - Production e-commerce\n- Server 62 (192.168.1.62): cpall - Web hosting\n\nMetrics include:\n- CPU usage and load\n- Memory and swap usage\n- Disk I/O and space\n- Network traffic\n- System uptime"
+}

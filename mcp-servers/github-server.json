@@ -1,0 +1,144 @@
+{
+  "name": "github",
+  "description": "MCP server for GitHub integration - repositories, issues, PRs, and code search",
+  "version": "1.0.0",
+  "type": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-github"
+  ],
+  "env": {
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+    "GITHUB_API_URL": "https://api.github.com"
+  },
+  "capabilities": {
+    "resources": true,
+    "tools": true,
+    "prompts": true
+  },
+  "tools": [
+    {
+      "name": "create_or_update_file",
+      "description": "Create or update a single file in a GitHub repository"
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search for GitHub repositories"
+    },
+    {
+      "name": "create_repository",
+      "description": "Create a new GitHub repository"
+    },
+    {
+      "name": "get_file_contents",
+      "description": "Get contents of a file or directory"
+    },
+    {
+      "name": "push_files",
+      "description": "Push multiple files in a single commit"
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in a repository"
+    },
+    {
+      "name": "create_pull_request",
+      "description": "Create a new pull request"
+    },
+    {
+      "name": "fork_repository",
+      "description": "Fork a repository to user or organization"
+    },
+    {
+      "name": "create_branch",
+      "description": "Create a new branch in a repository"
+    },
+    {
+      "name": "list_commits",
+      "description": "Get list of commits for a repository"
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues in a repository"
+    },
+    {
+      "name": "update_issue",
+      "description": "Update an existing issue"
+    },
+    {
+      "name": "add_issue_comment",
+      "description": "Add a comment to an issue"
+    },
+    {
+      "name": "search_code",
+      "description": "Search for code across GitHub"
+    },
+    {
+      "name": "search_issues",
+      "description": "Search for issues and pull requests"
+    },
+    {
+      "name": "get_issue",
+      "description": "Get details of a specific issue"
+    }
+  ],
+  "configuration": {
+    "defaultOwner": "",
+    "defaultRepo": "",
+    "autoFork": false,
+    "defaultBranch": "main",
+    "commitMessage": "Updated via MCP GitHub Server"
+  },
+  "rateLimits": {
+    "primary": 5000,
+    "search": 30,
+    "perPage": 100
+  },
+  "features": {
+    "codeSearch": true,
+    "issueManagement": true,
+    "pullRequests": true,
+    "repositoryManagement": true,
+    "fileOperations": true,
+    "organizationSupport": true
+  },
+  "security": {
+    "requireToken": true,
+    "tokenPermissions": [
+      "repo",
+      "workflow",
+      "write:packages",
+      "read:org"
+    ],
+    "encryptedTokenStorage": true
+  },
+  "integration": {
+    "vscode": true,
+    "claude": true,
+    "cline": true,
+    "continue": true
+  },
+  "useCases": [
+    "Automated repository management",
+    "Issue and PR creation from Claude Code",
+    "Code search and analysis across repositories",
+    "Multi-repo refactoring and updates",
+    "Documentation updates and synchronization"
+  ],
+  "setup": {
+    "tokenSetup": [
+      "1. Go to GitHub Settings -> Developer settings -> Personal access tokens",
+      "2. Generate new token (classic) with required permissions",
+      "3. Set GITHUB_TOKEN environment variable",
+      "4. Add to .env file: GITHUB_TOKEN=ghp_your_token_here"
+    ],
+    "envFile": ".env"
+  },
+  "notes": [
+    "Requires GITHUB_TOKEN environment variable",
+    "Respects GitHub API rate limits",
+    "Use for automated workflows with Claude Code",
+    "Referenced in 3-deep-dive.md for GitHub integration"
+  ]
+}
