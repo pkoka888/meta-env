@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./src", "./tests", "./docs"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  },
+  "models": {
+    "chat": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-20250514"
+    },
+    "autocomplete": {
+      "provider": "ollama",
+      "model": "qwen2.5-coder:7b",
+      "apiBase": "http://localhost:11434"
+    }
+  },
+  "features": {
+    "autoApprove": false,
+    "contextOptimization": true,
+    "skillsEnabled": true
+  }
+}

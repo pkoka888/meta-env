@@ -1,0 +1,158 @@
+{
+  "name": "analysis-team",
+  "description": "Multi-agent team for data analysis and insights generation",
+  "agents": [
+    {
+      "name": "data_engineer",
+      "role": "Data Engineer",
+      "system_message": "You are a data engineer. You handle data collection, cleaning, transformation, and pipeline creation. You ensure data quality and prepare datasets for analysis.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.4,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 5,
+      "code_execution_config": {
+        "work_dir": "workspace/analysis",
+        "use_docker": false
+      }
+    },
+    {
+      "name": "statistician",
+      "role": "Statistician",
+      "system_message": "You are a statistician. You perform statistical analysis, hypothesis testing, and probability calculations. You ensure analytical rigor and interpret statistical significance.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.3,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 5,
+      "code_execution_config": {
+        "work_dir": "workspace/analysis",
+        "use_docker": false
+      }
+    },
+    {
+      "name": "ml_engineer",
+      "role": "ML Engineer",
+      "system_message": "You are a machine learning engineer. You build predictive models, train algorithms, optimize hyperparameters, and evaluate model performance. You choose appropriate ML techniques for different problems.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.4,
+        "timeout": 180
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 8,
+      "code_execution_config": {
+        "work_dir": "workspace/analysis",
+        "use_docker": false
+      }
+    },
+    {
+      "name": "visualizer",
+      "role": "Data Visualizer",
+      "system_message": "You are a data visualization specialist. You create clear, informative charts, graphs, and dashboards. You choose appropriate visualization types and make data insights accessible.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.5,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 5,
+      "code_execution_config": {
+        "work_dir": "workspace/analysis",
+        "use_docker": false
+      }
+    },
+    {
+      "name": "interpreter",
+      "role": "Business Analyst",
+      "system_message": "You are a business analyst. You translate technical findings into business insights, identify actionable recommendations, and communicate results to stakeholders in clear, non-technical language.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.6,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 4
+    },
+    {
+      "name": "user_proxy",
+      "role": "User Proxy",
+      "system_message": "You are a user proxy that coordinates the analysis team. You relay analysis requests and aggregate team results.",
+      "human_input_mode": "TERMINATE",
+      "max_consecutive_auto_reply": 0,
+      "code_execution_config": {
+        "work_dir": "workspace/analysis",
+        "use_docker": false
+      }
+    }
+  ],
+  "workflow": {
+    "type": "sequential",
+    "steps": [
+      {
+        "agent": "data_engineer",
+        "description": "Collect and prepare data for analysis"
+      },
+      {
+        "agent": "statistician",
+        "description": "Perform statistical analysis"
+      },
+      {
+        "agent": "ml_engineer",
+        "description": "Build and evaluate ML models if needed"
+      },
+      {
+        "agent": "visualizer",
+        "description": "Create visualizations of findings"
+      },
+      {
+        "agent": "interpreter",
+        "description": "Translate findings into business insights"
+      }
+    ]
+  },
+  "termination": {
+    "max_rounds": 12,
+    "termination_msg": "ANALYSIS_COMPLETE"
+  },
+  "tools": [
+    "code_execution",
+    "file_read",
+    "file_write",
+    "data_query"
+  ]
+}

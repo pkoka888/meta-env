@@ -1,0 +1,53 @@
+{
+  "recommendations": {
+    "// MUST-HAVE Extensions (Required for project)": [
+      "continue.continue",
+      "saoudrizwan.claude-dev",
+      "github.copilot",
+      "ms-vscode.vscode-json",
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "ms-vscode-remote.remote-ssh",
+      "redhat.vscode-yaml",
+      "tamasfe.even-better-toml"
+    ],
+
+    "// RECOMMENDED Extensions (Highly beneficial)": [
+      "bradlc.vscode-tailwindcss",
+      "ms-azuretools.vscode-docker",
+      "ms-vscode.makefile-tools",
+      "formulahendry.code-runner",
+      "streetsidesoftware.code-spell-checker",
+      "eamodio.gitlens",
+      "donjayamanne.githistory",
+      "yzhang.markdown-all-in-one",
+      "bierner.markdown-mermaid",
+      "gruntfuggly.todo-tree",
+      "oderwat.indent-rainbow",
+      "usernamehw.errorlens",
+      "christian-kohler.path-intellisense"
+    ]
+  },
+
+  "unwantedRecommendations": [
+    "// NEVER USE - These extensions conflict with our setup",
+    "formulahendry.auto-close-tag",
+    "hookyqr.beautify",
+    "ms-vscode.vscode-typescript-tslint-plugin"
+  ],
+
+  "// Extension Configuration Notes": {
+    "note1": "Continue.dev - Free AI autocomplete and chat (supports Ollama and OpenRouter)",
+    "note2": "Cline (claude-dev) - Agentic coding assistant that can read/write files",
+    "note3": "GitHub Copilot - Backup AI pair programmer (requires subscription)",
+    "note4": "Prettier - Code formatting (formatOnSave enabled in settings.json)",
+    "note5": "ESLint - JavaScript/TypeScript linting",
+    "note6": "Remote SSH - For remote Debian server development",
+    "note7": "Docker - Container management and Dockerfile support",
+    "note8": "GitLens - Advanced Git integration",
+    "note9": "Todo Tree - Highlights TODO, FIXME, etc. in code",
+    "note10": "Error Lens - Inline error messages"
+  }
+}

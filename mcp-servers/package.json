@@ -1,0 +1,30 @@
+{
+  "name": "meta-env-mcp-servers",
+  "version": "1.0.0",
+  "description": "Custom MCP servers for meta-env project monitoring and integrations",
+  "type": "module",
+  "scripts": {
+    "start:prometheus": "node prometheus-server.js",
+    "dev:prometheus": "NODE_ENV=development node prometheus-server.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "prometheus",
+    "monitoring",
+    "claude",
+    "grafana"
+  ],
+  "author": "meta-env",
+  "license": "MIT"
+}

@@ -1,0 +1,99 @@
+{
+  "name": "filesystem",
+  "description": "MCP server for filesystem operations - read/write files, search, and directory management",
+  "version": "1.0.0",
+  "type": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-filesystem",
+    "/home/user/meta-env"
+  ],
+  "env": {},
+  "capabilities": {
+    "resources": true,
+    "tools": true,
+    "prompts": false
+  },
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Read complete contents of a file from allowed directories"
+    },
+    {
+      "name": "read_multiple_files",
+      "description": "Read multiple files simultaneously"
+    },
+    {
+      "name": "write_file",
+      "description": "Create new file or overwrite existing with content"
+    },
+    {
+      "name": "edit_file",
+      "description": "Make selective edits using advanced pattern matching"
+    },
+    {
+      "name": "create_directory",
+      "description": "Create new directory or ensure it exists"
+    },
+    {
+      "name": "list_directory",
+      "description": "List directory contents with [FILE] or [DIR] markers"
+    },
+    {
+      "name": "move_file",
+      "description": "Move or rename files and directories"
+    },
+    {
+      "name": "search_files",
+      "description": "Recursively search for files/directories matching pattern"
+    },
+    {
+      "name": "get_file_info",
+      "description": "Get metadata about file or directory"
+    },
+    {
+      "name": "list_allowed_directories",
+      "description": "List all directories the server can access"
+    }
+  ],
+  "allowedDirectories": [
+    "/home/user/meta-env",
+    "/var/www/projects",
+    "/var/www/universal-env"
+  ],
+  "restrictedPaths": [
+    "/home/user/meta-env/.git",
+    "/home/user/meta-env/node_modules",
+    "/var/www/projects/*/node_modules",
+    "/var/www/projects/*/.git"
+  ],
+  "configuration": {
+    "maxFileSize": "10MB",
+    "encoding": "utf-8",
+    "followSymlinks": false,
+    "respectGitignore": true
+  },
+  "security": {
+    "sandboxed": true,
+    "allowedOperations": [
+      "read",
+      "write",
+      "create",
+      "delete",
+      "rename"
+    ]
+  },
+  "integration": {
+    "vscode": true,
+    "claude": true,
+    "cline": true,
+    "continue": true
+  },
+  "notes": [
+    "Filesystem server provides safe, sandboxed access to project files",
+    "Respects .gitignore and excludes node_modules by default",
+    "Use for project file management, code analysis, and documentation",
+    "Referenced in 3-deep-dive.md for Claude Code integration"
+  ]
+}

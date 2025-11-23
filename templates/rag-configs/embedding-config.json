@@ -1,0 +1,165 @@
+{
+  "version": "1.0",
+  "name": "embedding-config",
+  "description": "Embedding model configuration for RAG systems",
+  "models": {
+    "primary": {
+      "name": "nomic-embed-text",
+      "provider": "ollama",
+      "base_url": "http://localhost:11434",
+      "dimensions": 768,
+      "max_seq_length": 8192,
+      "use_case": "general_purpose",
+      "performance": {
+        "batch_size": 32,
+        "timeout": 30,
+        "retry_attempts": 3
+      }
+    },
+    "code": {
+      "name": "nomic-embed-text",
+      "provider": "ollama",
+      "base_url": "http://localhost:11434",
+      "dimensions": 768,
+      "max_seq_length": 8192,
+      "use_case": "code_embeddings",
+      "preprocessing": {
+        "remove_comments": false,
+        "normalize_whitespace": true,
+        "include_docstrings": true
+      }
+    },
+    "multilingual": {
+      "name": "paraphrase-multilingual-MiniLM-L12-v2",
+      "provider": "sentence-transformers",
+      "dimensions": 384,
+      "max_seq_length": 128,
+      "use_case": "multilingual_support",
+      "supported_languages": ["en", "de", "fr", "es", "it"]
+    },
+    "fallback": {
+      "name": "text-embedding-3-small",
+      "provider": "openai",
+      "api_key_env": "OPENAI_API_KEY",
+      "dimensions": 1536,
+      "max_seq_length": 8191,
+      "use_case": "fallback"
+    }
+  },
+  "preprocessing": {
+    "text_cleaning": {
+      "remove_html": true,
+      "remove_urls": true,
+      "remove_emails": false,
+      "lowercase": false,
+      "remove_extra_whitespace": true,
+      "remove_special_chars": false
+    },
+    "chunking": {
+      "strategy": "semantic",
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "min_chunk_size": 100,
+      "max_chunk_size": 2000,
+      "separators": ["\n\n", "\n", ". ", "! ", "? ", " "],
+      "keep_separator": true
+    },
+    "metadata_extraction": {
+      "enabled": true,
+      "extract_title": true,
+      "extract_keywords": true,
+      "extract_summary": false,
+      "custom_fields": []
+    }
+  },
+  "batch_processing": {
+    "enabled": true,
+    "batch_size": 32,
+    "max_concurrent_batches": 4,
+    "queue_size": 1000,
+    "timeout_seconds": 60
+  },
+  "caching": {
+    "enabled": true,
+    "cache_type": "redis",
+    "connection": {
+      "host": "localhost",
+      "port": 6379,
+      "db": 2,
+      "password": null
+    },
+    "ttl_seconds": 86400,
+    "max_cache_size_mb": 1024
+  },
+  "optimization": {
+    "dimension_reduction": {
+      "enabled": false,
+      "method": "pca",
+      "target_dimensions": 384
+    },
+    "quantization": {
+      "enabled": false,
+      "precision": "float16"
+    },
+    "gpu_acceleration": {
+      "enabled": false,
+      "device": "cuda:0"
+    }
+  },
+  "quality": {
+    "deduplication": {
+      "enabled": true,
+      "similarity_threshold": 0.95,
+      "method": "cosine"
+    },
+    "validation": {
+      "min_embedding_norm": 0.1,
+      "max_embedding_norm": 2.0,
+      "check_nan": true,
+      "check_inf": true
+    }
+  },
+  "monitoring": {
+    "metrics": {
+      "enabled": true,
+      "track_latency": true,
+      "track_throughput": true,
+      "track_cache_hit_rate": true,
+      "track_error_rate": true
+    },
+    "prometheus": {
+      "enabled": true,
+      "port": 9092,
+      "metrics_path": "/metrics"
+    },
+    "logging": {
+      "level": "INFO",
+      "format": "json",
+      "log_file": "logs/embeddings.log",
+      "log_batch_info": true
+    }
+  },
+  "api": {
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 1000,
+      "burst": 100
+    },
+    "timeout": {
+      "connect_timeout": 5,
+      "read_timeout": 30,
+      "total_timeout": 60
+    },
+    "retry": {
+      "max_attempts": 3,
+      "backoff_factor": 2,
+      "retry_on_status": [429, 500, 502, 503, 504]
+    }
+  },
+  "benchmarking": {
+    "enabled": false,
+    "test_set_path": "./data/benchmark/test_set.json",
+    "metrics": ["cosine_similarity", "dot_product", "euclidean_distance"],
+    "baseline_model": "text-embedding-ada-002"
+  }
+}

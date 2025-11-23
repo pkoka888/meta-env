@@ -1,0 +1,150 @@
+{
+  "name": "code-team",
+  "description": "Multi-agent team for software development tasks",
+  "agents": [
+    {
+      "name": "architect",
+      "role": "Software Architect",
+      "system_message": "You are a software architect. You design system architecture, choose appropriate technologies, define interfaces, and ensure scalability and maintainability. You create technical specifications and architectural diagrams.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/qwen2.5-coder:7b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.5,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 5
+    },
+    {
+      "name": "developer",
+      "role": "Software Developer",
+      "system_message": "You are a software developer. You write clean, efficient, and well-documented code. You follow coding standards, implement features according to specifications, and ensure code quality.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/qwen2.5-coder:7b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.4,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 8,
+      "code_execution_config": {
+        "work_dir": "workspace/code",
+        "use_docker": false
+      }
+    },
+    {
+      "name": "tester",
+      "role": "QA Engineer",
+      "system_message": "You are a QA engineer. You write comprehensive tests (unit, integration, e2e), identify edge cases, ensure test coverage, and validate that code meets requirements. You catch bugs before they reach production.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/qwen2.5-coder:7b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.3,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 5,
+      "code_execution_config": {
+        "work_dir": "workspace/code",
+        "use_docker": false
+      }
+    },
+    {
+      "name": "reviewer",
+      "role": "Code Reviewer",
+      "system_message": "You are a code reviewer. You review code for quality, security, performance, and adherence to best practices. You provide constructive feedback and ensure code meets project standards.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.3,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 3
+    },
+    {
+      "name": "security_expert",
+      "role": "Security Engineer",
+      "system_message": "You are a security engineer. You identify security vulnerabilities, ensure secure coding practices, review authentication and authorization, and protect against common attacks (SQL injection, XSS, CSRF, etc.).",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.2,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 3
+    },
+    {
+      "name": "user_proxy",
+      "role": "User Proxy",
+      "system_message": "You are a user proxy that coordinates the development team. You relay user requests, manage the development workflow, and aggregate team results.",
+      "human_input_mode": "TERMINATE",
+      "max_consecutive_auto_reply": 0,
+      "code_execution_config": {
+        "work_dir": "workspace/code",
+        "use_docker": false
+      }
+    }
+  ],
+  "workflow": {
+    "type": "sequential",
+    "steps": [
+      {
+        "agent": "architect",
+        "description": "Design system architecture and create specifications"
+      },
+      {
+        "agent": "developer",
+        "description": "Implement features according to specifications"
+      },
+      {
+        "agent": "tester",
+        "description": "Write and run tests to validate implementation"
+      },
+      {
+        "agent": "reviewer",
+        "description": "Review code quality and adherence to standards"
+      },
+      {
+        "agent": "security_expert",
+        "description": "Perform security audit and vulnerability assessment"
+      }
+    ]
+  },
+  "termination": {
+    "max_rounds": 15,
+    "termination_msg": "CODE_COMPLETE"
+  },
+  "tools": [
+    "code_execution",
+    "file_read",
+    "file_write",
+    "git_operations"
+  ]
+}

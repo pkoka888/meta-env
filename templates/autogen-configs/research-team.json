@@ -1,0 +1,119 @@
+{
+  "name": "research-team",
+  "description": "Multi-agent team for research and analysis tasks",
+  "agents": [
+    {
+      "name": "researcher",
+      "role": "Research Specialist",
+      "system_message": "You are a research specialist. Your role is to gather information, analyze data, and provide comprehensive research reports. You have access to web search and can synthesize information from multiple sources.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.7,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 5
+    },
+    {
+      "name": "analyst",
+      "role": "Data Analyst",
+      "system_message": "You are a data analyst. You examine research findings, identify patterns, create comparisons, and draw insights. You excel at creating structured reports with tables and visualizations.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.5,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 5
+    },
+    {
+      "name": "critic",
+      "role": "Critical Reviewer",
+      "system_message": "You are a critical reviewer. Your role is to evaluate research findings, identify gaps, question assumptions, and ensure accuracy. You provide constructive feedback to improve the quality of research.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.3,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 3
+    },
+    {
+      "name": "writer",
+      "role": "Technical Writer",
+      "system_message": "You are a technical writer. You take research findings and analysis results and create clear, well-structured documentation. You ensure reports are professional, readable, and actionable.",
+      "llm_config": {
+        "config_list": [
+          {
+            "model": "ollama/llama3:8b",
+            "base_url": "http://localhost:11434",
+            "api_key": "ollama"
+          }
+        ],
+        "temperature": 0.6,
+        "timeout": 120
+      },
+      "human_input_mode": "NEVER",
+      "max_consecutive_auto_reply": 3
+    },
+    {
+      "name": "user_proxy",
+      "role": "User Proxy",
+      "system_message": "You are a user proxy that coordinates the research team. You relay user requests and aggregate team results.",
+      "human_input_mode": "TERMINATE",
+      "max_consecutive_auto_reply": 0,
+      "code_execution_config": {
+        "work_dir": "workspace/research",
+        "use_docker": false
+      }
+    }
+  ],
+  "workflow": {
+    "type": "sequential",
+    "steps": [
+      {
+        "agent": "researcher",
+        "description": "Gather initial research and data"
+      },
+      {
+        "agent": "analyst",
+        "description": "Analyze findings and create structured insights"
+      },
+      {
+        "agent": "critic",
+        "description": "Review and validate the analysis"
+      },
+      {
+        "agent": "writer",
+        "description": "Create final documentation"
+      }
+    ]
+  },
+  "termination": {
+    "max_rounds": 10,
+    "termination_msg": "RESEARCH_COMPLETE"
+  },
+  "tools": [
+    "web_search",
+    "file_read",
+    "file_write"
+  ]
+}

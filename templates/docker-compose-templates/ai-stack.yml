@@ -1,0 +1,255 @@
+version: '3.8'
+
+services:
+  # Ollama (Local LLM Inference)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ${PROJECT_NAME:-ai}_ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    networks:
+      - ai-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ChromaDB (Vector Database)
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: ${PROJECT_NAME:-ai}_chromadb
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=${CHROMA_TELEMETRY:-FALSE}
+    volumes:
+      - chroma_data:/chroma/chroma
+    ports:
+      - "${CHROMA_PORT:-8000}:8000"
+    networks:
+      - ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # n8n (Workflow Automation)
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ${PROJECT_NAME:-ai}_n8n
+    environment:
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=${N8N_PORT:-5678}
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://localhost:5678/}
+      - GENERIC_TIMEZONE=${TIMEZONE:-UTC}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    networks:
+      - ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Qdrant (Alternative Vector Database)
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: ${PROJECT_NAME:-ai}_qdrant
+    volumes:
+      - qdrant_data:/qdrant/storage
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+      - "${QDRANT_GRPC_PORT:-6334}:6334"
+    networks:
+      - ai-network
+    restart: unless-stopped
+    profiles:
+      - alternative
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Weaviate (Alternative Vector Database)
+  weaviate:
+    image: semitechnologies/weaviate:latest
+    container_name: ${PROJECT_NAME:-ai}_weaviate
+    environment:
+      - QUERY_DEFAULTS_LIMIT=25
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - PERSISTENCE_DATA_PATH=/var/lib/weaviate
+      - DEFAULT_VECTORIZER_MODULE=none
+      - CLUSTER_HOSTNAME=node1
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    ports:
+      - "${WEAVIATE_PORT:-8080}:8080"
+    networks:
+      - ai-network
+    restart: unless-stopped
+    profiles:
+      - alternative
+
+  # LiteLLM Proxy (Unified LLM API)
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: ${PROJECT_NAME:-ai}_litellm
+    environment:
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-1234}
+      - LITELLM_SALT_KEY=${LITELLM_SALT_KEY:-sk-salt-1234}
+      - DATABASE_URL=postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/litellm
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml:ro
+    ports:
+      - "${LITELLM_PORT:-4000}:4000"
+    command: --config /app/config.yaml --port 4000
+    depends_on:
+      - postgres
+    networks:
+      - ai-network
+    restart: unless-stopped
+    profiles:
+      - proxy
+
+  # Flowise (Low-Code LLM Apps)
+  flowise:
+    image: flowiseai/flowise:latest
+    container_name: ${PROJECT_NAME:-ai}_flowise
+    environment:
+      - PORT=${FLOWISE_PORT:-3000}
+      - FLOWISE_USERNAME=${FLOWISE_USER:-admin}
+      - FLOWISE_PASSWORD=${FLOWISE_PASSWORD:-admin}
+      - DATABASE_PATH=/root/.flowise
+      - APIKEY_PATH=/root/.flowise
+      - SECRETKEY_PATH=/root/.flowise
+    volumes:
+      - flowise_data:/root/.flowise
+    ports:
+      - "${FLOWISE_PORT:-3001}:3000"
+    networks:
+      - ai-network
+    restart: unless-stopped
+    profiles:
+      - lowcode
+
+  # PostgreSQL (for LiteLLM/Flowise)
+  postgres:
+    image: postgres:16-alpine
+    container_name: ${PROJECT_NAME:-ai}_postgres
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=litellm
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - proxy
+      - lowcode
+
+  # Redis (Caching for AI)
+  redis:
+    image: redis:7-alpine
+    container_name: ${PROJECT_NAME:-ai}_redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Chainlit (Chat UI)
+  chainlit:
+    build:
+      context: ./chainlit
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME:-ai}_chainlit
+    environment:
+      - CHAINLIT_URL=${CHAINLIT_URL:-http://localhost:8000}
+      - OLLAMA_URL=http://ollama:11434
+      - CHROMA_URL=http://chromadb:8000
+    volumes:
+      - ./chainlit:/app
+    ports:
+      - "${CHAINLIT_PORT:-8000}:8000"
+    depends_on:
+      - ollama
+      - chromadb
+    networks:
+      - ai-network
+    restart: unless-stopped
+    profiles:
+      - ui
+
+  # Open WebUI (Ollama UI)
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: ${PROJECT_NAME:-ai}_open_webui
+    environment:
+      - OLLAMA_API_BASE_URL=http://ollama:11434/api
+      - WEBUI_AUTH=${WEBUI_AUTH:-false}
+    volumes:
+      - open_webui_data:/app/backend/data
+    ports:
+      - "${OPEN_WEBUI_PORT:-8080}:8080"
+    depends_on:
+      - ollama
+    networks:
+      - ai-network
+    restart: unless-stopped
+    profiles:
+      - ui
+
+networks:
+  ai-network:
+    driver: bridge
+
+volumes:
+  ollama_data:
+  chroma_data:
+  n8n_data:
+  qdrant_data:
+  weaviate_data:
+  postgres_data:
+  redis_data:
+  flowise_data:
+  open_webui_data:

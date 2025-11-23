@@ -1,0 +1,32 @@
+{
+  "provider": "openrouter",
+  "apiKey": "${OPENROUTER_API_KEY}",
+  "model": "anthropic/claude-sonnet-4",
+  "autoApprove": {
+    "fileOperations": true,
+    "terminalCommands": [
+      "npm install",
+      "npm test",
+      "npm run build",
+      "pip install",
+      "pytest",
+      "git status",
+      "git diff",
+      "git log",
+      "docker ps",
+      "docker-compose up -d",
+      "ls",
+      "cat",
+      "grep"
+    ],
+    "lowRiskOperations": true
+  },
+  "maxTokens": 8096,
+  "temperature": 0.7,
+  "autoSave": true,
+  "contextWindow": "extended",
+  "experimental": {
+    "parallelToolCalls": true,
+    "streamingResponses": true
+  }
+}

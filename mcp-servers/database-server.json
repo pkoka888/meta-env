@@ -1,0 +1,178 @@
+{
+  "name": "database",
+  "description": "MCP server for database operations - PostgreSQL, MySQL, SQLite support with query execution",
+  "version": "1.0.0",
+  "type": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-postgres"
+  ],
+  "env": {
+    "DATABASE_URL": "${DATABASE_URL}",
+    "DB_HOST": "${DB_HOST:-localhost}",
+    "DB_PORT": "${DB_PORT:-5432}",
+    "DB_NAME": "${DB_NAME}",
+    "DB_USER": "${DB_USER}",
+    "DB_PASSWORD": "${DB_PASSWORD}",
+    "DB_SSL": "${DB_SSL:-false}"
+  },
+  "capabilities": {
+    "resources": true,
+    "tools": true,
+    "prompts": true
+  },
+  "tools": [
+    {
+      "name": "query",
+      "description": "Execute SQL query against database"
+    },
+    {
+      "name": "list_tables",
+      "description": "List all tables in the database"
+    },
+    {
+      "name": "describe_table",
+      "description": "Get schema information for a table"
+    },
+    {
+      "name": "insert",
+      "description": "Insert data into a table"
+    },
+    {
+      "name": "update",
+      "description": "Update records in a table"
+    },
+    {
+      "name": "delete",
+      "description": "Delete records from a table"
+    },
+    {
+      "name": "create_table",
+      "description": "Create a new table"
+    },
+    {
+      "name": "drop_table",
+      "description": "Drop an existing table"
+    },
+    {
+      "name": "execute_migration",
+      "description": "Execute database migration script"
+    },
+    {
+      "name": "backup_database",
+      "description": "Create database backup"
+    }
+  ],
+  "supportedDatabases": {
+    "postgresql": {
+      "defaultPort": 5432,
+      "features": ["full-text-search", "json", "arrays", "advanced-indexes"],
+      "connectionString": "postgresql://user:password@host:port/database"
+    },
+    "mysql": {
+      "defaultPort": 3306,
+      "features": ["full-text-search", "json", "transactions"],
+      "connectionString": "mysql://user:password@host:port/database"
+    },
+    "sqlite": {
+      "features": ["embedded", "serverless", "file-based"],
+      "connectionString": "sqlite:///path/to/database.db"
+    },
+    "supabase": {
+      "defaultPort": 5432,
+      "features": ["realtime", "auth", "storage", "edge-functions"],
+      "connectionString": "postgresql://postgres:password@db.project.supabase.co:5432/postgres"
+    }
+  },
+  "configuration": {
+    "maxConnections": 10,
+    "connectionTimeout": 30000,
+    "queryTimeout": 60000,
+    "enableSSL": false,
+    "poolSize": 5,
+    "idleTimeout": 10000
+  },
+  "security": {
+    "readOnly": false,
+    "allowDDL": true,
+    "allowDML": true,
+    "restrictedCommands": [
+      "DROP DATABASE",
+      "TRUNCATE TABLE (production only)"
+    ],
+    "parameterizedQueries": true,
+    "sqlInjectionProtection": true,
+    "encryptedConnection": true
+  },
+  "environments": {
+    "development": {
+      "allowDangerous": true,
+      "logging": "verbose",
+      "restrictions": []
+    },
+    "production": {
+      "allowDangerous": false,
+      "logging": "errors",
+      "restrictions": [
+        "DROP",
+        "TRUNCATE",
+        "ALTER TABLE DROP COLUMN"
+      ]
+    }
+  },
+  "features": {
+    "transactions": true,
+    "migrations": true,
+    "backups": true,
+    "schemaInspection": true,
+    "queryOptimization": true,
+    "connectionPooling": true
+  },
+  "integration": {
+    "vscode": true,
+    "claude": true,
+    "cline": true,
+    "continue": true,
+    "supabase": true,
+    "prisma": true,
+    "typeorm": true
+  },
+  "useCases": [
+    "Database schema exploration and documentation",
+    "Query generation and optimization",
+    "Data analysis and reporting",
+    "Migration creation and execution",
+    "Database debugging and troubleshooting",
+    "Automated testing with test data"
+  ],
+  "setup": {
+    "postgresql": [
+      "1. Install PostgreSQL server",
+      "2. Create database and user",
+      "3. Set DATABASE_URL or individual DB_* variables",
+      "4. Test connection: psql -h localhost -U user -d database"
+    ],
+    "supabase": [
+      "1. Create Supabase project",
+      "2. Get connection string from project settings",
+      "3. Set DATABASE_URL from Supabase dashboard",
+      "4. Enable required extensions (if needed)"
+    ],
+    "envFile": ".env"
+  },
+  "monitoring": {
+    "queryLogging": true,
+    "performanceMetrics": true,
+    "connectionPoolMetrics": true,
+    "slowQueryThreshold": 1000
+  },
+  "notes": [
+    "Requires DATABASE_URL or individual connection parameters",
+    "Supports PostgreSQL (primary), MySQL, SQLite",
+    "Production mode restricts dangerous operations",
+    "Use for database exploration, migrations, and data analysis",
+    "Compatible with Supabase and other PostgreSQL providers",
+    "Referenced in 3-deep-dive.md for database integration"
+  ]
+}
