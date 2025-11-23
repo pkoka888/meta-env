@@ -1,0 +1,47 @@
+{
+  "folders": [
+    {
+      "name": "Server 60 - Development Projects",
+      "uri": "vscode-remote://ssh-remote+server60-backups/var/www/projects"
+    }
+  ],
+  "settings": {
+    "workbench.colorTheme": "Default Dark Modern",
+    "editor.fontSize": 14,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
+    "terminal.integrated.shellArgs.windows": ["/k", "C:\\Windows\\System32\\bash.exe"],
+    "git.autofetch": true,
+    "remote.SSH.configFile": "~/.ssh/config",
+    "remote.SSH.showLoginTerminal": true,
+    "cline.mcp.enabled": true,
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.git": true,
+      "**/coverage": true
+    },
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/.git/**": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode-remote.remote-ssh",
+      "ms-vscode-remote.remote-ssh-edit",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-json",
+      "redhat.vscode-yaml",
+      "ms-azuretools.vscode-docker",
+      "ms-vscode.vscode-typescript-next",
+      "formulahendry.auto-rename-tag",
+      "christian-kohler.path-intellisense"
+    ]
+  },
+  "remoteAuthority": "ssh-remote+server60-backups",
+  "name": "Server 60 - Development Projects"
+}

@@ -1,0 +1,36 @@
+{
+  "folders": [
+    {
+      "name": "Budget Control - Server 61",
+      "uri": "vscode-remote://ssh-remote+server61/var/www/budget-control"
+    }
+  ],
+  "settings": {
+    "workbench.colorTheme": "Default Dark Modern",
+    "editor.fontSize": 14,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
+    "git.autofetch": true,
+    "remote.SSH.configFile": "~/.ssh/config",
+    "remote.SSH.showLoginTerminal": true,
+    "cline.mcp.enabled": true,
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.git": true,
+      "**/coverage": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode-remote.remote-ssh",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-typescript-next",
+      "formulahendry.auto-rename-tag"
+    ]
+  },
+  "remoteAuthority": "ssh-remote+server61",
+  "name": "Budget Control - Production"
+}

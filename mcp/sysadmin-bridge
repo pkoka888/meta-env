@@ -1,0 +1,15 @@
+
+#!/bin/bash
+#
+# A placeholder script for the sysadmin-bridge.
+# It logs all arguments to a file.
+#
+
+LOG_FILE=".meta-env/mcp/sysadmin-bridge.log"
+
+echo "Received command: $@" >> "${LOG_FILE}"
+
+# In the future, this script will contain the logic for executing
+# sysadmin tasks. For now, it just logs the command.
+
+exit 0
